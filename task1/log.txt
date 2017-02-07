@@ -1,0 +1,11 @@
+commit 1ddb4a0f6353daeda484a96b5b70245492c6c9de
+Author: ihnashchanka <ignashchanka@gmail.com>
+Date:   Tue Feb 7 17:54:14 2017 +0300
+
+    add status.txt
+
+commit a718a305e79ea27c15afe74d4396ec4d3cfc83d5
+Author: ihnashchanka <ignashchanka@gmail.com>
+Date:   Tue Feb 7 17:52:29 2017 +0300
+
+    add .gitignore
