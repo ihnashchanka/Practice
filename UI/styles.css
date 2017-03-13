@@ -1,89 +1,107 @@
 body{
-	text-align: center;
 	background-image: url("images/background.jpg");
 	background-color: #B8958B;
-	font: 18px 'Comfortaa', cursive;
-	margin: 0px;
 	
+	margin: 0px;
+		
+	text-align: center;
+	
+	font: 18px 'Comfortaa', cursive;	
 }
 div
 {
 	vertical-align: middle;
 }
 .note{
+	background-image: url("images/note.png");
+	background-repeat: no-repeat;
+	
 	width: 100vw;
 	margin: 0px;
 	padding: 0px;  
-	background-image: url("images/note.png");
-	background-repeat: no-repeat;
 }
 .keyboard{
-	margin: 0px;
-	padding: 0px;
 	background-image: url("images/keyboard.png");
 	background-repeat: no-repeat;
 	background-position: right;
+	
+	margin: 0px;
+	padding: 0px;
 }
 .envelop{
+	background-color: rgba(255,255,255,0);
 	
 	width: 1330px;
 	height: 600px;
-	background-color: rgba(255,255,255,0);
 }
-.left_header{
+.left-header{
 	display: inline-block;
 	vertical-align: middle;
 	text-align: left;
+	
 	width: 33%;
 }
 .title{
 	display: inline-block;
-	font-family: 'Finger Paint', cursive;
 	vertical-align: middle;
 	width: 33%;
+	
+	font-family: 'Finger Paint', cursive;
 }
 .right_header{
 	display: inline-block;
 	vertical-align: middle;
-	text-align: right;
 	width: 33%;
+	text-align: right;
 }
 .border{
+	background-color:rgba(255,255,255,0);
+	
 	display: inline-block;
 	vertical-align: middle;
-	background-color:rgba(255,255,255,0);
+	
 	width: 10%;
 	height:100%;
 }
-.new_page{
+.new-page{
+	background-color:rgba(255,255,255,0.26);
+	
 	display: inline-block;
 	vertical-align: middle;
+	
 	width:9%;
 	height:100%;
-	background-color:rgba(255,255,255,0.26);
 }
-.work_space{
+.work-space{
+	background-color:rgba(255,255,255,0);
+	
 	display: inline-block;
 	vertical-align: middle;
+	
 	margin:0.3em;
+	
 	width:100%;
 	height:88%;
-	background-color:rgba(255,255,255,0);
+
 }
 .article{
+	background-color: white;
+	
 	display: inline-block;
 	text-align:center;
 	vertical-align: top;
-	background-color: white;
-	font-size: 0.7em;
+	
 	padding: 0.5em;
 	margin:0.3em;
 	width: 29em;
 	height:15em;
+	
+	font-size: 0.7em;
 }
 .info{
 	text-align:left;
 	float: left;
+	
 	height:15em;
 	width:23em;
 }
@@ -93,90 +111,106 @@ div
 }
 .tools{
 	width:20%;
-	font-size:0.8em;
-	color: gray;
 	float: right;
+	
+	font-size:0.8em;
+	color: 	#DCDCDC;
 }
 
 .text{
 	overflow: hidden;
 	text-overflow: ellipsis;
+	
 	width:23em;
 }
 .tegs{
-	
 	vertical-align: middle;
+	
 	overflow: hidden;
 	text-overflow: ellipsis;
-	color: #A52A2A;
+	
 	height:3.1em;
 	width:23em;
+	
+	color: #A52A2A;
 }
 .center{
 	display: inline-block;
+	
 	margin:0.1em;
 	height:100%;
 	width:78%;
 }
 .filter{
+	background-color:rgba(255,255,255,0.26);
+	
 	display:inline-block;
 	vertical-align: middle;
-	background-color:rgba(255,255,255,0.26);
+	
 	width:100%;
 	height:12%;
-	color: white;
 	margin: 0.3em 0em 0em 0em;
+	
+	color: #ffffff;
 }
 
 .news{
 	display: inline-block;
 	vertical-align: middle;
 	text-align: center;
+	
 	padding: 0em;
 	border: 0em;
 	width:79%;
 }
-.main_part{
+.main-part{
+	background-color:rgba(255,255,255,0);
+		
 	vertical-align: middle;
 	margin:0;
 	width:100%;
 	height:80%;
-	background-color:rgba(255,255,255,0);
-	
 }
 input{
-	border: 0.1em solid white;
-	color:	#808080;
 	background-color: rgba(255,255,255,1);
-	font: 2em;
+		
+	border: 0.1em solid white;
+	margin: 0.7em;
 	width:15em;
 	height:2.5em;
-	margin: 0.7em;
+	
+	color:	#808080;
+	font: 2em;
 }
 select{
-	color:	#808080;
-	border: 0.1em solid white;
 	background-color: rgba(255,255,255,1);
-	font: 2em;
+
+	border: 0.1em solid white;
+	margin: 0.7em;
 	width:15em;
 	height:2.5em;
-	margin: 0.7em;
+	
+	font: 2em;
+	color:	#808080;
 }
 
 
 button{
-	vertical-align: middle;
 	background-color:rgba(255,255,255,0);
+	
+	vertical-align: middle;
+	
 	padding:0.1em 0.3em 0.1em 0.3em;
 	border: 0.3em solid white;
-	color: white;
-	font: 1em Comic Sans, cursive;
 	width:10em;
 	height:2.3em;
 	
+	color: #ffffff;
+	font: 1em Comic Sans, cursive;
 }
 .icon{
 	vertical-align: middle;
+	
 	width:50px;
 	height:50px;
 	}
@@ -188,34 +222,41 @@ button{
 	width: 100%;
 }
 h1{
-	margin:5px 10px 5px 10px;
 	background-color: rgba(255,255,255,0.26);
+	
+	margin:5px 10px 5px 10px;
+	
 	font-size: 2.5em;
 	letter-spacing: 1 em;
 }
 h2{
-	font-size: 1.5em;
 	margin:2px;
+	
+	font-size: 1.5em;
 	line-height: 1.2;
 }
 
 header{
 	text-align: center;
-	color: white;
+	
 	border-bottom: 0.2em solid white;
 	margin:0px 1.8em 0px 1.8em;
 	padding: 0.3em;
+	
 	font: 18px Comic Sans, cursive;
+	color: #ffffff;
 }
 
 footer{
 	background-color: rgba(255,255,255,0.26);
 	display: inline-block;
-	font-size:0.8em;
-	color: white;
+	
 	margin: 1.5em 0em 0em 0em;
 	padding: 0.3em;
 	width: 100%;
+	
+	font-size:0.8em;
+	color: #ffffff;
 }
 
 img{
