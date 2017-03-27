@@ -1,123 +1,118 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>News</title>
-	<link rel="stylesheet" href="styles.css" type="text/css">
-	<link href="https://fonts.googleapis.com/css?family=Comfortaa:700|Finger+Paint&amp;subset=cyrillic" rel="stylesheet">
+    <meta charset="utf-8">
+    <title>News</title>
+    <link rel="stylesheet" href="styles.css" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Comfortaa:700|Finger+Paint&amp;subset=cyrillic"
+          rel="stylesheet">
 </head>
 <body>
 <div class="note">
-<div class="keyboard">
-<div class="envelop">
+    <div class="keyboard">
+        <div class="envelop">
 
-	<header>
-		<div class="left-header">
-			<button class="icon"> <img src="images/icons/menu.png"></button>
-			<button>Темы</button>
-			<button class="icon"><img src="images/icons/add.png"></button>
-		</div>
-		<div class="title"><h1> News </h1></div>
-		<div class='right_header'>
-		</div>
-	</header>
-	<div class="main-part">
-		<div class="border"></div>
-		<div class="center">
-			<div class="filter">
-				<span> 
+            <header>
+                <div class="left-header">
+                    <button class="tags">Темы</button>
+                    <button class="icon"><img src="images/icons/add.png"></button>
+                </div>
+                <div class="title"><h1> News </h1></div>
+                <div class='right_header'>
+                </div>
+            </header>
+
+            <template id="holder">
+                <div class="article">
+                    <div class="info">
+                        <div class="hide">
+                            <h2></h2>
+                            <div></div>
+                        </div>
+                        <div class="tegs"></div>
+                    </div>
+                    <div class="tools">
+                        <button class="icon"><img data-action="change" src="images/icons/change.png"></button>
+                        <button class="icon"><img data-action="delete"
+                                                  src="images/icons/delete.png">
+                        </button>
+                        <button class="icon"><img data-action="read"
+                                                  src="images/icons/read_more.png">
+                        </button>
+                    </div>
+                </div>
+            </template>
+            <template id="read_more">
+                <div class="read">
+                    <h2></h2>
+                    <p class="small"></p>
+                    <p class="small"></p>
+                    <p class="summary"><br><br></p>
+                    <button class="icon"><img data-action="change" src="images/icons/change.png"></button>
+                    <button class="icon"><img data-action="delete" src="images/icons/delete.png"></button>
+                    <button class="to_main">На главную</button>
+                </div>
+
+            </template>
+
+            <template class="main-page">
+                <div class="border"></div>
+                <div class="center">
+                    <div class="filter">
+				<span>
 					<span>Автор</span>
-					<select>
+					<select class="author">
 					</select>
 				</span>
-				<span><button>Применить</button></span>
-				<span>
-					<input  type="date"></input>
+                        <span><button class="use">Применить</button></span>
+                        <span>
+					<input type="date" class="date" placeholder=""></input>
 					<span>Дата</span>
 				</span>
-			</div>
-			<div class="work-space"> 
-				<div class="new-page"><button class="page"><img src="images/icons/left.png"></button></div>
-				<div class="news">
-					<div class="article">
-						<div class="info">
-							<div class="hide">
-								<h2></h2>
-								<div></div>
-							</div>
-							<div class="tegs"></div>
-						</div>
-						<div class="tools">
-							<p></p>
-						<p></p>
-							<button class="icon"><img src="images/icons/change.png"></button>
-							<button class="icon"><img src="images/icons/delete.png"></button>
-							<button action="read_more" class="icon"><img src="images/icons/read_more.png"></button>
-						</div>
-					</div>
-					<div class="article">
-						<div class="info">
-							<div class="hide">
-								<h2></h2>
-								<div></div>
-							</div>
-							<div class="tegs"></div>
-						</div>
-						<div class="tools">
-							<p></p>
-						<p></p>
-							<button class="icon"><img src="images/icons/change.png"></button>
-							<button class="icon"><img src="images/icons/delete.png"></button>
-							<button class="icon read_more"><img src="images/icons/read_more.png"></button>
-						</div>
-					</div>
-					<div class="article">
-						<div class="info">
-							<div class="hide">
-								<h2></h2>
-								<div></div>
-							</div>
-							<div class="tegs"></div>
-						</div>
-						<div class="tools">
-						<p></p>
-						<p></p>
-							<button class="icon"><img src="images/icons/change.png"></button>
-							<button class="icon"><img src="images/icons/delete.png"></button>
-							<button class="icon read_more" class="read_more"><img src="images/icons/read_more.png"></button>
-						</div>
-					</div>
-					<div class="article">
-						<div class="info">
-							<div class="hide">
-								<h2></h2>
-								<div></div>
-							</div>
-							<div class="tegs"></div>
-						</div>
-						<div class="tools">
-						<p></p>
-						<p></p>
-							<button class="icon"><img src="images/icons/change.png"></button>
-							<button class="icon"><img src="images/icons/delete.png"></button>
-							<button class="icon read_more"><img src="images/icons/read_more.png"></button>
-						</div>
-					</div>
-				</div>
-				<div class="new-page"><button class="page"><img src="images/icons/right.png"></button></div>
-			</div>
-		</div>
-		<div class="border"></div>
-	</div>
-	<footer>
-		<span>Игнащенко Татьяна</span>
-		<span>2 курс 8 группа</span>
-		<span>ignashchanka@gmail.com</span>
-		<span>20.02.2017</span>
-	</footer>
-	<script src="script.js"></script>
-</div>
-</div>
+                    </div>
+                    <div class="work-space">
+                        <div class="new-page">
+                            <button class="page"><img src="images/icons/left.png"></button>
+                        </div>
+
+
+                        <div class="news">
+                        </div>
+                        <div class="new-page">
+                            <button class="page"><img src="images/icons/right.png"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="border"></div>
+            </template>
+
+
+            <template class="add">
+                <div class="edit">
+                    <div>Заголовок</div>
+                    <textarea id="title" maxlength="100" rows="2"></textarea>
+                    <div>Краткое описание</div>
+                    <textarea id="summary" maxlength="200" rows="5"></textarea>
+                    <div>Содержание</div>
+                    <textarea id="content" rows="10"></textarea>
+                    <div class="add_tags"></div>
+                    <button class="to_main">Добавить</button>
+                </div>
+            </template>
+
+            <div class="main-part">
+
+
+            </div>
+            <footer>
+                <span>Игнащенко Татьяна</span>
+                <span>2 курс 8 группа</span>
+                <span>ignashchanka@gmail.com</span>
+                <span>20.02.2017</span>
+            </footer>
+             <script src="script.js"></script>
+        </div>
+    </div>
 </div>
 </body>
 </html>

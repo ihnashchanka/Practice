@@ -1,10 +1,15 @@
 ﻿var user = {
-    name: 'Пользователь'
+    name: 'Пользователь',
+    date: new Date()
 };
 //var user = null;
-
-var start = 4;
-var filterConfig;
+var isAdd = false;
+var start = 0;
+var filterConfig = {
+    author: "",
+    createdAt: "",
+    tags: []
+};
 
 var GLOBAL_ARTICLES = [
     {
@@ -162,17 +167,26 @@ var GLOBAL_ARTICLES = [
         content: " Всего в этом мероприятии было задействовано более 1,2 тыс. сотрудников различных подразделений МВД." +
         " Также в параде участвовало 46 единиц техники — современных машин и ретроавтомобилей.",
         tag: ['Культура']
-    },
+    }
 ];
 var GLOBAL_TAGS = ['Беларусь', 'Литва', 'Россия', 'Украина', 'Латвия', 'Польша', 'Авто', 'Проишествия', 'Спорт', 'Строительство', 'Культура', 'Афиша', 'Политика', 'Экономика', 'Туризм', 'Образование', 'Университет', 'Наука'];
 var GLOBAL_AUTHORS = ['Станислав', 'Дмитрий', 'Владимир', 'Иванов Иван', 'Виталий Олехнович', 'Onliner.by', "Станислав", 'Анна', "TUT.BY"];
 
+function getArticle(id) {
+    var result = GLOBAL_ARTICLES.filter(function (item) {
+        return item.id === id;
+    });
+    if (result) {
+        return result[0];
+    }
+    return false;
+}
 
 function userCheck() {
     var right = document.querySelector('.right_header');
     var sing = document.createElement('button');
     sing.style.display = 'inline-block';
-    if (user == null) {
+    if (user === null) {
         sing.innerHTML = 'Вход';
         right.appendChild(sing);
         var options = document.querySelectorAll('.tools>.icon');
@@ -194,20 +208,24 @@ function userCheck() {
 
 }
 function formSelection() {
-
-    for (var i = 0; i < GLOBAL_AUTHORS.length; i++) {
+    var sel = document.querySelector('select');
+    var op = document.createElement('option');
+    op.text = "Выберите автора";
+    op.value = "";
+    sel.appendChild(op);
+    GLOBAL_AUTHORS.forEach(function (item) {
         var sel = document.querySelector('select');
         var op = document.createElement('option');
-        op.innerHTML = GLOBAL_AUTHORS[i];
+        op.value = item;
+        op.text = item;
         sel.appendChild(op);
-    }
+    });
 }
 function showArticles(skip=0, top=4, filterConfig='') {
 
     function createDate(article) {
         var month = article.createdAt.getMonth() + 1;
-        var result = article.createdAt.getDate() + "." + month + "." + article.createdAt.getFullYear();
-        return result;
+        return article.createdAt.getDate() + "." + month + "." + article.createdAt.getFullYear();
     }
 
     function compareDates(firstArg, secondArg) {
@@ -216,15 +234,15 @@ function showArticles(skip=0, top=4, filterConfig='') {
 
     function getArticles(skip=0, top=10, filterConfig = '') {
         var result = GLOBAL_ARTICLES;
-        if (filterConfig.tag != undefined) {
+        if (filterConfig.tags) {
             result = result.filter(function (obj) {
-                var flag = filterConfig.tag.every(function (item, index, array) {
+                var flag = filterConfig.tags.every(function (item, index, array) {
                     return obj.tag.join(" ").indexOf(item) != -1;
                 });
                 return flag;
             });
         }
-        if (filterConfig.createdAt != undefined)
+        if (filterConfig.createdAt)
             result = result.filter(function (obj) {
                 var flag = obj.createdAt.getFullYear() === filterConfig.createdAt.getFullYear();
                 flag = flag & obj.createdAt.getMonth() === filterConfig.createdAt.getMonth();
@@ -232,7 +250,7 @@ function showArticles(skip=0, top=4, filterConfig='') {
                 return flag;
             });
         result.sort(compareDates);
-        if (filterConfig.author != undefined)
+        if (filterConfig.author)
             result = result.filter(function (obj) {
                 return obj.author.toLowerCase() === filterConfig.author.toLowerCase();
             })
@@ -240,26 +258,33 @@ function showArticles(skip=0, top=4, filterConfig='') {
         return result;
     }
 
+    var news = document.querySelector(".news");
+    if (news) {
+        while (news.firstChild) {
+            news.removeChild(news.firstChild);
+        }
+    }
     var articles = getArticles(skip, top, filterConfig);
-    var holders = document.querySelectorAll('.article');
-    for (var i = 0; i < articles.length && i < holders.length; i++) {
-        holders[i].id = articles[i].id;
-        var hide = holders[i].querySelector('.hide');
+    for (var i = 0; i < articles.length && i < 4; i++) {
+        var tmpl = document.getElementById("holder");
+        holder = tmpl.content.cloneNode(true);
+        var buttons = holder.querySelectorAll("button>img");
+        buttons.forEach(function (item) {
+            item.id = articles[i].id;
+        });
+        var hide = holder.querySelector('.hide');
         var title = hide.querySelector('h2');
         var summary = hide.querySelector('div');
-
-        var tools = holders[i].querySelector('.tools');
+        var tools = holder.querySelector('.tools');
         title.innerHTML = articles[i].title;
         summary.innerHTML = articles[i].summary;
         var author = document.createTextNode("\n" + articles[i].author);
         var date = document.createTextNode(createDate(articles[i]));
-        tools.removeChild(tools.firstChild);
-        tools.removeChild(tools.firstChild);
         tools.insertBefore(author, tools.firstChild);
         tools.insertBefore(date, tools.firstChild);
-
-        var tags = holders[i].querySelector('.tegs');
-        tags.innerHTML = '<p>' + articles[i].tag.join(' ') + '</p>';
+        var tags = holder.querySelector('.tegs');
+        tags.innerHTML = '<p class="full_article">' + articles[i].tag.join(' ') + '</p>';
+        news.appendChild(holder);
     }
 }
 function removeArticle(id) {
@@ -282,7 +307,7 @@ function removeArticle(id) {
     }
 
     deleteArticle(id);
-    showArticles(start, 4, filterConfig);
+    showMainPage();
 }
 function editArticle(id, article) {
     function getArticlePosition(id) {
@@ -316,20 +341,10 @@ function editArticle(id, article) {
     GLOBAL_ARTICLES[pos].content = article.content;
     GLOBAL_ARTICLES[pos].tag = article.tag;
 
-    showArticles(start, 4, filterConfig);
+    showMainPage();
     return true;
 }
 function addArticle(article) {
-    function getArticle(id) {
-        var result = GLOBAL_ARTICLES.filter(function (item) {
-            return item.id === id;
-        });
-        if (result) {
-            return result;
-        }
-        return false;
-    }
-
     function validateArticle(article) {
         if (!getArticle(article.id) || !article.id) {
             return false;
@@ -362,7 +377,6 @@ function addArticle(article) {
         return false;
     }
     GLOBAL_ARTICLES.push(article);
-    showArticles(start, 4, filterConfig);
     return true;
 }
 
@@ -377,27 +391,259 @@ function showPrivious(event) {
     start -= 4;
     showArticles(start, 4, filterConfig);
 }
-//function workWithArticles(event){
-this.read_more = function () {
-    console.log('snrubbrinb');
+
+
+function showMainPage() {
+    var mainPart = document.querySelector(".main-part");
+    mainPart.style.backgroundColor = "rgba(255,255,255,0)"
+    while (mainPart.firstChild) {
+        mainPart.removeChild(mainPart.firstChild);
+    }
+    mainPart.appendChild(document.querySelector(".main-page").content.cloneNode(true));
+    formSelection();
+    var use = document.querySelector(".use");
+    use.addEventListener('click', changeFilter);
+    var previous = document.querySelectorAll(".new-page")[0];
+    var next = document.querySelectorAll(".new-page")[1];
+
+    previous.addEventListener('click', showPrivious);
+    next.addEventListener('click', showNext);
+    showArticles(start, 4, filterConfig);
+}
+
+
+this.read = function (id) {
+
+
+    var mainPart = document.querySelector(".main-part");
+    while (mainPart.firstChild) {
+        mainPart.removeChild(mainPart.firstChild);
+    }
+    var tmpl = document.querySelector("#read_more");
+    mainPart.appendChild(tmpl.content.cloneNode(true));
+    mainPart.style.backgroundColor = "rgba(255,255,255,0.7)";
+    var article = getArticle(id);
+    if (!article) {
+        return false;
+    }
+
+    var title = document.querySelector('h2');
+    title.innerText = article.title;
+
+    var author = document.querySelectorAll('.small');
+    author[0].innerText = article.author;
+    author[1].innerText = article.createdAt.getDate() + "." + ( article.createdAt.getMonth() + 1 ) + "." + article.createdAt.getFullYear();
+
+    var p = document.querySelector('p.summary');
+    p.appendChild(document.createTextNode(article.content));
+
+    var buttons = mainPart.querySelectorAll("button>img");
+    buttons.forEach(function (item) {
+        item.id = id;
+    });
+    var toMain = mainPart.querySelector(".to_main");
+    toMain.addEventListener('click', showMainPage);
+    var div = mainPart.querySelector('div');
+    article.tag.forEach(function (item) {
+        var t = document.createElement('p');
+        t.className = "small";
+        t.innerHTML = item;
+        div.appendChild(t);
+    });
+
+}
+
+this.delete = function (id) {
+    removeArticle(id);
 }
 var self = this;
-var action = event.target.getAttribute('action');
-if (action) {
-    self[action]();
+
+this.change = function(id){
+    var event;
+    showAdd(event, id)
 }
+
+function workWithArticles(event) {
+    // var target = event.target;
+    var action = event.target.getAttribute('data-action');
+    var id = event.target.id;
+    if (action) {
+        self[action](id);
+    }
 }
+
+function cleanFiterConfig(event) {
+    filterConfig.author = "";
+    filterConfig.createdAt = "";
+    filterConfig.tags = [];
+}
+
+function changeFilter(event) {
+    cleanFiterConfig(event);
+    var u = document.querySelector(".author");
+    filterConfig.author = u.options[u.selectedIndex].value;
+    u = document.querySelector(".date");
+    if (u.value) {
+        filterConfig.createdAt = new Date(u.value);
+    }
+    else {
+        filterConfig.createdAt = "";
+    }
+    start = 0;
+    var tags = document.querySelectorAll(".checkbox");
+    tags.forEach(function (item) {
+        if (item.checked) {
+            filterConfig.tags.push(item.value);
+        }
+    });
+    showArticles(start, 4, filterConfig);
+}
+
+function showTags(event) {
+
+    function cleanBorder(event) {
+        var place = document.querySelector(".border");
+        while (place.firstChild) {
+            place.removeChild(place.firstChild);
+        }
+        place.style.backgroundColor = "rgba(255,255,255,0)";
+    }
+
+    var place = document.querySelector(".border");
+    if (place.firstChild) {
+        cleanBorder('click');
+        return;
+    }
+    place.style.backgroundColor = "rgba(255,255,255,0.7)";
+    var but = document.createElement('button');
+    but.innerHTML = "Скрыть";
+    but.className = "hide_tags";
+    but.addEventListener('click', cleanBorder);
+    place.appendChild(but);
+    GLOBAL_TAGS.forEach(function (item) {
+        var checkBox = document.createElement("input");
+        checkBox.type = "checkbox";
+        checkBox.className = "checkbox";
+        checkBox.id = item;
+        checkBox.value = item;
+        var label = document.createElement("label");
+        label.htmlFor = item;
+        label.innerHTML = item;
+        var div = document.createElement("div");
+        div.appendChild(checkBox);
+        div.appendChild(label);
+        place.appendChild(div);
+    });
+}
+
+
+
+function showAdd(event, ID="") {
+
+    var mainPart = document.querySelector(".main-part");
+    mainPart.style.backgroundColor = "rgba(255,255,255,0)"
+    while (mainPart.firstChild) {
+        mainPart.removeChild(mainPart.firstChild);
+    }
+    mainPart.appendChild(document.querySelector(".add").content.cloneNode(true));
+    var edit = document.querySelector(".edit");
+    var title = document.createElement('div');
+    var date = document.createElement('div');
+    date.className = "user_information";
+    title.className = "user_information";
+    var tags = document.querySelector(".add_tags");
+    GLOBAL_TAGS.forEach(function (item) {
+        var checkBox = document.createElement("input");
+        checkBox.type = "checkbox";
+        checkBox.className = "checkbox";
+        checkBox.id = item;
+        checkBox.value = item;
+        var label = document.createElement("label");
+        label.htmlFor = item;
+        label.innerText = item;
+        var div = document.createElement("div");
+        div.style.display = "inline-block";
+        div.appendChild(checkBox);
+        div.appendChild(label);
+        tags.appendChild(div);
+    });
+    if(!ID) {
+        isAdd = true;
+        var article = {
+            tag: []
+        }
+         ID = String(GLOBAL_ARTICLES.length+1);
+        title.innerText = user.name;
+        date.innerText = user.date.getDate() + "." + ( user.date.getMonth() + 1 ) + "." + user.date.getFullYear();
+
+    }
+    else{
+        isAdd = false;
+        article = getArticle(ID);
+        document.querySelector("#title").value = article.title;
+        document.querySelector("#summary").value = article.summary;
+        document.querySelector("#content").value = article.content;
+        title.innerText = article.author;
+        date.innerText = article.createdAt.getDate() + "." + ( article.createdAt.getMonth() + 1 ) + "." + article.createdAt.getFullYear();
+ tags = document.querySelectorAll("input");
+ tags.forEach(function(item){
+     if(article.tag.join(' ').includes(item.value))
+     {
+         item.checked  = true;
+     }
+ });
+    }
+    function saveArticle(event,flag) {
+
+        article.title = document.querySelector("#title").value;
+        article.summary = document.querySelector("#summary").value;
+        article.content = document.querySelector("#content").value;
+        article.id = ID;
+        article.tag = [];
+        var tags = document.querySelectorAll("input");
+        tags.forEach(function (item) {
+            if (item.checked) {
+                article.tag.push(item.value);
+            }
+        })
+        if(isAdd) {
+            article.author = user.name;
+            article.createdAt = user.date;
+            addArticle(article);
+        }
+        else{
+            editArticle(ID,article);
+        }
+        showMainPage();
+
+    }
+
+    var id = document.createElement('div');
+
+    id.innerText = "ID: " + ID;
+    id.className = "user_information";
+    edit.insertBefore(id, edit.firstChild);
+    edit.insertBefore(date, edit.firstChild);
+    edit.insertBefore(title, edit.firstChild);
+
+
+
+
+    var add = document.querySelector(".to_main");
+    add.addEventListener('click', saveArticle);
+
+}
+
+
 userCheck();
-formSelection();
-showArticles(start, 4, filterConfig);
 
-var previous = document.querySelectorAll(".new-page")[0];
-var next = document.querySelectorAll(".new-page")[1];
+showMainPage();
 
-previous.addEventListener('click', showPrivious);
-next.addEventListener('click', showNext);
+var articleList = document.querySelector(".main-part");
+articleList.addEventListener('click', workWithArticles);
 
+var tmp = document.querySelector(".tags");
+tmp.addEventListener('click', showTags);
 
-//var articalList = document.querySelector(".news");
-//articalList.addEventListener('click', workWithArticles);
-
+tmp = document.querySelector("header>div>button>img");
+tmp.addEventListener('click', showAdd);
