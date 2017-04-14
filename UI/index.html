@@ -12,14 +12,28 @@
     <div class="keyboard">
         <div class="envelop">
 
-            <header>
+            <template id="log-in">
                 <div class="left-header">
                     <button class="tags">Темы</button>
                     <button class="icon"><img src="images/icons/add.png"></button>
                 </div>
-                <div class="title"><h1> News </h1></div>
+                <div class="main_title"><h1> News </h1></div>
                 <div class='right_header'>
+                    <button id="log"></button>
                 </div>
+            </template>
+
+            <template id="log-out">
+                <div class="left-header">
+                    <button class="tags">Темы</button>
+                    <button class="icon"><img src="images/icons/add.png"></button>
+                </div>
+                <div class="main_title"><h1> News </h1></div>
+                <div class='right_header'>
+                    <button id="log"></button>
+                </div>
+            </template>
+            <header>
             </header>
 
             <template id="holder">
@@ -32,6 +46,7 @@
                         <div class="tegs"></div>
                     </div>
                     <div class="tools">
+                        <p class="author-date-info"></p>
                         <button class="icon"><img data-action="change" src="images/icons/change.png"></button>
                         <button class="icon"><img data-action="delete"
                                                   src="images/icons/delete.png">
@@ -64,22 +79,20 @@
 					<select class="author">
 					</select>
 				</span>
-                        <span><button class="use">Применить</button></span>
+                        <span><button class="use" data-action="filter">Применить</button></span>
                         <span>
-					<input type="date" class="date" placeholder=""></input>
+					<input type="date" class="date"></input>
 					<span>Дата</span>
 				</span>
                     </div>
                     <div class="work-space">
                         <div class="new-page">
-                            <button class="page"><img src="images/icons/left.png"></button>
+                            <button class="page" data-action="previousPage"><img src="images/icons/left.png"></button>
                         </div>
-
-
                         <div class="news">
                         </div>
                         <div class="new-page">
-                            <button class="page"><img src="images/icons/right.png"></button>
+                            <button class="page" data-action="nextPage"><img src="images/icons/right.png"></button>
                         </div>
                     </div>
                 </div>
@@ -100,6 +113,21 @@
                 </div>
             </template>
 
+
+            <template class="log">
+                <div class="log_in">
+                    <h2>Вход</h2>
+                    <div>Имя пользователя</div>
+                    <textarea class="text_log" id="user_name" rows="1"></textarea>
+                    <div>Пароль</div>
+                    <textarea class="text_log" id="password" rows="1"></textarea>
+                    <span><button class="to_main">На главную</button></span>
+                    <span><button class="to_main">Войти</button></span>
+
+                </div>
+
+            </template>
+
             <div class="main-part">
 
 
@@ -110,7 +138,7 @@
                 <span>ignashchanka@gmail.com</span>
                 <span>20.02.2017</span>
             </footer>
-             <script src="script.js"></script>
+            <script src="script.js"></script>
         </div>
     </div>
 </div>
