@@ -1,0 +1,377 @@
+body {
+    background-image: url("images/background.jpg");
+    background-color: #B8958B;
+
+    margin: 0px;
+
+    text-align: center;
+
+    font: 18px 'Comfortaa', cursive;
+}
+
+div {
+    vertical-align: middle;
+}
+
+.note {
+    background-image: url("images/note.png");
+    background-repeat: no-repeat;
+
+    width: 100vw;
+    margin: 0px;
+    padding: 0px;
+}
+
+.keyboard {
+    background-image: url("images/keyboard.png");
+    background-repeat: no-repeat;
+    background-position: right;
+
+    margin: 0px;
+    padding: 0px;
+}
+
+.envelop {
+    background-color: rgba(255, 255, 255, 0);
+
+    width: 1330px;
+    height: 600px;
+}
+
+.left-header {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: left;
+
+    width: 33%;
+}
+
+.main_title {
+    display: inline-block;
+    vertical-align: middle;
+    width: 33%;
+
+    font-family: 'Finger Paint', cursive;
+}
+
+.right_header {
+    display: inline-block;
+    vertical-align: middle;
+    width: 33%;
+    text-align: right;
+}
+
+.border {
+    background-color: rgba(255, 255, 255, 0);
+
+    display: inline-block;
+    vertical-align: middle;
+    text-align: left;
+    margin: 0px;
+
+    overflow-y: auto;
+
+    width: 12%;
+    height: 100%;
+}
+
+.new-page {
+    background-color: rgba(255, 255, 255, 0.26);
+
+    display: inline-block;
+    vertical-align: middle;
+
+    width: 9%;
+    height: 100%;
+}
+
+.work-space {
+    background-color: rgba(255, 255, 255, 0);
+
+    display: inline-block;
+    vertical-align: middle;
+
+    margin: 0.3em;
+
+    width: 100%;
+    height: 88%;
+
+}
+
+.article {
+    background-color: white;
+
+    display: inline-block;
+    text-align: center;
+    vertical-align: top;
+
+    padding: 0.5em;
+    margin: 0.3em;
+    width: 29em;
+    height: 15em;
+
+    font-size: 0.7em;
+}
+
+.info {
+    text-align: left;
+    float: left;
+
+    height: 15em;
+    width: 23em;
+}
+
+.hide {
+    height: 12em;
+    overflow: hidden;
+}
+
+.tools {
+    width: 20%;
+    float: right;
+
+    font-size: 0.8em;
+    color: #DCDCDC;
+}
+
+.text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    width: 23em;
+}
+
+.tegs {
+    vertical-align: middle;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    height: 3.1em;
+    width: 23em;
+
+    color: #A52A2A;
+}
+
+.center {
+    display: inline-block;
+
+    margin: 0px;
+    height: 100%;
+    width: 74%;
+}
+
+.filter {
+    background-color: rgba(255, 255, 255, 0.26);
+
+    display: inline-block;
+    vertical-align: middle;
+
+    width: 100%;
+    height: 12%;
+    margin: 0.3em 0em 0em 0em;
+
+    color: #ffffff;
+}
+
+.news {
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+
+    padding: 0em;
+    border: 0em;
+    width: 79%;
+}
+
+.main-part {
+    background-color: rgba(255, 255, 255, 0);
+    text-align: center;
+    vertical-align: middle;
+    margin: 0;
+    width: 100%;
+    height: 80%;
+}
+
+.read {
+    margin-left: 300px;
+    margin-right: 300px;
+    padding: 10px;
+    height: 96%;
+    border-left: 3px solid #bababa;
+    border-right: 3px solid #bababa;
+    overflow: auto;
+}
+
+.edit {
+    margin-left: 300px;
+    margin-right: 300px;
+    padding-left: 40px;
+    padding-right: 40px;
+    height: 96%;
+    border-left: 3px solid #bababa;
+    border-right: 3px solid #bababa;
+    background-color: rgba(255, 255, 255, 0);
+    text-align: left;
+    overflow: hidden;
+}
+
+input {
+    background-color: rgba(255, 255, 255, 1);
+
+    border: 0.1em solid white;
+    margin: 0.7em;
+    width: 15em;
+    height: 2.5em;
+
+    color: #808080;
+    font: 2em;
+}
+
+select {
+    background-color: rgba(255, 255, 255, 1);
+
+    border: 0.1em solid white;
+    margin: 0.7em;
+    width: 15em;
+    height: 2.5em;
+
+    font: 2em;
+    color: #808080;
+}
+
+.small {
+    float: left;
+    margin: 10px;
+    font-size: 12px;
+}
+
+button {
+    background-color: rgba(255, 255, 255, 0);
+    color: #e37971;
+    border: 5px solid white;
+    vertical-align: middle;
+
+    padding: 0.1em 0.3em 0.1em 0.3em;
+    border: 0.3em solid white;
+    width: 10em;
+    height: 2.3em;
+
+    font: 1em Comic Sans, cursive;
+}
+
+.icon {
+    vertical-align: middle;
+    border: 0px;
+    width: 50px;
+    height: 50px;
+}
+
+.page {
+    text-align: center;
+    border: 0px;
+    padding: 0px;
+    height: 100%;
+    width: 100%;
+}
+
+h1 {
+    background-color: rgba(255, 255, 255, 0.26);
+
+    margin: 5px 10px 5px 10px;
+
+    font-size: 2.5em;
+    letter-spacing: 1em;
+}
+
+h2 {
+    margin: 2px;
+
+    font-size: 1.5em;
+    line-height: 1.2;
+}
+
+header {
+    text-align: center;
+
+    border-bottom: 0.2em solid white;
+    margin: 0px 1.8em 0px 1.8em;
+    padding: 0.3em;
+
+    font: 18px Comic Sans, cursive;
+    color: #ffffff;
+}
+
+footer {
+    background-color: rgba(255, 255, 255, 0.26);
+    display: inline-block;
+
+    margin: 1.5em 0em 0em 0em;
+    padding: 0.3em;
+    width: 100%;
+
+    font-size: 0.8em;
+    color: #ffffff;
+}
+
+img {
+    width: 25px;
+    height: 25px;
+}
+
+.checkbox {
+    height: 14px;
+    width: 14px;
+}
+
+label {
+    font-size: 12px;
+}
+
+.hide_tags {
+    color: dimgray;
+    border: 3px solid dimgray;
+    background-color: rgba(255, 255, 255, 0);
+    width: 100%;
+}
+
+.edit > textarea {
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 100%;
+}
+
+.add_tags {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 60%;
+    height: 20%;
+    overflow: auto;
+}
+
+.user_information {
+    display: inline-block;
+    width: 33%
+}
+
+.log_in {
+    margin: auto;
+
+    width: 30%;
+    height: 40%;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 30px;
+    text-align: left;
+}
+
+.text_log {
+    background-color: rgba(255, 255, 255, 1);
+    width: 100%;
+    border: 0px;
+}
+
+.log_in>span>button {
+    margin: 7px;
+   float: left;
+}
+
+
