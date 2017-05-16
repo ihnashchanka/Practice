@@ -36,7 +36,7 @@ app.get('/checkUser', function (req, res) {
 });
 app.get('/filterChange', function (req, res) {
     var author = req.query.author;
-    var createdAt = req.query.createdAt;
+    var createdAt = req.query.createdAt ? new Date(req.query.createdAt):"";
     var tags = req.query.tags;
     if (!author && !createdAt && !tags) {
         articlesModule.cleanFilterConfig();

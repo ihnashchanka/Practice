@@ -22,8 +22,24 @@ var serverModule = (function () {
         return info;
     }
 
+    function convert(filter) {
+        const result = [];
+        if (!filter) {
+            return result;
+        }
+        Object.keys(filter).forEach(function (key) {
+            result.push(encodeURIComponent(key)+'='+encodeURIComponent(filter[key]));
+        });
+        return result.join('&');
+    }
+
     function changeFilter(author, createdAt, tags) {
-        hreq.open('GET', '/filterChange?author=' + author + "&createdAt=" + createdAt + "&tags=" + tags.join(" "), false);
+        var filterConfig = {
+            author: author,
+            createdAt: createdAt,
+            tags: tags
+        }
+        hreq.open('GET', '/filterChange?'+ convert(filterConfig), false);
         hreq.send();
         var info = JSON.parse(hreq.responseText);
         parseDate(info);
