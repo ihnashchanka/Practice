@@ -1,25 +1,30 @@
-var serverModule = (function () {
-    hreq = new XMLHttpRequest();
+/* exported serverModule */
+
+const serverModule = (function () {
+    let hreq = new XMLHttpRequest();
+
     function parseDate(array) {
         array.forEach(function (item) {
             item.createdAt = new Date(item.createdAt);
-        })
+        });
     }
 
 
     function getStartData() {
         hreq.open('GET', '/start', false);
         hreq.send();
-        var info = JSON.parse(hreq.responseText);
+        let info = JSON.parse(hreq.responseText);
         parseDate(info.articles);
         return info;
     }
 
     function checkUser(name, password) {
-        hreq.open('GET', '/checkUser?name=' + name + "&password=" + password, false);
+        if (!password) {
+            password = 'no_password';
+        }
+        hreq.open('GET', '/checkUser?name=' + name + '&password=' + password, false);
         hreq.send();
-        var info = JSON.parse(hreq.responseText);
-        return info;
+        return JSON.parse(hreq.responseText);
     }
 
     function convert(filter) {
@@ -28,20 +33,20 @@ var serverModule = (function () {
             return result;
         }
         Object.keys(filter).forEach(function (key) {
-            result.push(encodeURIComponent(key)+'='+encodeURIComponent(filter[key]));
+            result.push(encodeURIComponent(key) + '=' + encodeURIComponent(filter[key]));
         });
         return result.join('&');
     }
 
     function changeFilter(author, createdAt, tags) {
-        var filterConfig = {
+        let filterConfig = {
             author: author,
             createdAt: createdAt,
             tags: tags
-        }
-        hreq.open('GET', '/filterChange?'+ convert(filterConfig), false);
+        };
+        hreq.open('GET', '/filterChange?' + convert(filterConfig), false);
         hreq.send();
-        var info = JSON.parse(hreq.responseText);
+        let info = JSON.parse(hreq.responseText);
         parseDate(info);
         return info;
     }
@@ -49,7 +54,7 @@ var serverModule = (function () {
     function newPage(skip) {
         hreq.open('GET', '/newPage?skip=' + skip, false);
         hreq.send();
-        var info = JSON.parse(hreq.responseText);
+        let info = JSON.parse(hreq.responseText);
         parseDate(info);
         return info;
     }
@@ -57,7 +62,7 @@ var serverModule = (function () {
     function removeArticle(id) {
         hreq.open('GET', '/removeArticle?id=' + id, false);
         hreq.send();
-        var info = JSON.parse(hreq.responseText);
+        let info = JSON.parse(hreq.responseText);
         parseDate(info);
         return info;
     }
@@ -65,12 +70,12 @@ var serverModule = (function () {
     function readArticle(id) {
         hreq.open('GET', '/readArticle?id=' + id, false);
         hreq.send();
-        var info = JSON.parse(hreq.responseText);
+        let info = JSON.parse(hreq.responseText);
         info.createdAt = new Date(info.createdAt);
         return info;
     }
 
-    function editArticle(id, article) {
+    function editArticle(article) {
         hreq.open('PUT', '/editArticle', false);
         hreq.setRequestHeader('content-type', 'application/json');
         hreq.send(JSON.stringify(article));
@@ -79,7 +84,7 @@ var serverModule = (function () {
     function getArticles() {
         hreq.open('GET', '/getArticles', false);
         hreq.send();
-        info = JSON.parse(hreq.responseText);
+        let info = JSON.parse(hreq.responseText);
         parseDate(info);
         return info;
     }
@@ -101,5 +106,5 @@ var serverModule = (function () {
         editArticle: editArticle,
         getArticles: getArticles,
         addArticle: addArticle
-    }
+    };
 }());

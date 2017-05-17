@@ -1,3 +1,5 @@
+/* global require*/
+
 const express = require('express');
 
 const app = express();
@@ -8,24 +10,25 @@ app.use(bodyParser.json());
 
 
 app.get('/start', function (req, res) {
-    var result = {
+    let result;
+    result = {
         user: currentUser,
         authors: articlesModule.GLOBAL_AUTHORS,
-        articles: articlesModule.getArticles(start, 4),
+        articles: articlesModule.getArticles(start, articlesModule.MAX_ON_PAGE),
         tags: articlesModule.GLOBAL_TAGS
-    }
+    };
     res.status(200);
     res.json(result);
 });
 app.get('/checkUser', function (req, res) {
-    var name = req.query.name;
-    var password = req.query.password;
+    let name = req.query.name;
+    let password = req.query.password;
     if (!name || !password) {
         res.status(400);
         res.json(false);
     }
     else {
-        var result = articlesModule.comparePassword(name, password);
+        let result = articlesModule.comparePassword(name, password);
         if (result === articlesModule.USER_OK) {
             currentUser.name = name;
         }
@@ -35,39 +38,40 @@ app.get('/checkUser', function (req, res) {
 
 });
 app.get('/filterChange', function (req, res) {
-    var author = req.query.author;
-    var createdAt = req.query.createdAt ? new Date(req.query.createdAt):"";
-    var tags = req.query.tags;
+    let author = req.query.author;
+    let createdAt = req.query.createdAt ? new Date(req.query.createdAt) : '';
+    let tags = req.query.tags;
     if (!author && !createdAt && !tags) {
         articlesModule.cleanFilterConfig();
     }
     else {
-        tags = tags.split(" ");
+        tags = tags.split(' ');
         articlesModule.setFilterConfig(author, createdAt, tags);
     }
-    var articles = articlesModule.getArticles(start, 4);
+    let articles = articlesModule.getArticles(start, articlesModule.MAX_ON_PAGE);
     res.status(200);
     res.json(articles);
 });
 app.get('/newPage', function (req, res) {
-    var tmp = Number(req.query.skip);
+    let tmp = Number(req.query.skip);
     if (start + tmp <= articlesModule.GLOBAL_ARTICLES.length && start + tmp >= 0) {
         start += tmp;
     }
     res.status(200);
-    res.json(articlesModule.getArticles(start, 4));
+    res.json(articlesModule.getArticles(start, articlesModule.MAX_ON_PAGE));
 
-})
+});
+
 app.get('/removeArticle', function (req, res) {
-    id = req.query.id;
+    let id = req.query.id;
     articlesModule.removeArticle(id);
     res.status(200);
-    res.json(articlesModule.getArticles(start, 4));
+    res.json(articlesModule.getArticles(start, articlesModule.MAX_ON_PAGE));
 });
 
 app.get('/readArticle', function (req, res) {
-    id = req.query.id;
-    var article = articlesModule.getArticle(id);
+    let id = req.query.id;
+    let article = articlesModule.getArticle(id);
     if (!article) {
         res.status(400);
         res.json(false);
@@ -77,12 +81,12 @@ app.get('/readArticle', function (req, res) {
 });
 app.get('/getArticles', function (req, res) {
     res.status(200);
-    res.json(articlesModule.getArticles(start, 4));
+    res.json(articlesModule.getArticles(start, articlesModule.MAX_ON_PAGE));
 });
 
 
 app.put('/editArticle', function (req, res) {
-    var article = req.body;
+    let article = req.body;
     articlesModule.editArticle(article.id, article);
     res.status(200);
     res.json(true);
@@ -90,29 +94,30 @@ app.put('/editArticle', function (req, res) {
 });
 
 app.post('/addArticle', function (req, res) {
-    var article = req.body;
+    let article = req.body;
     articlesModule.addArticle(article);
     res.status(200);
     res.json(true);
 });
 
-var currentUser = {
-    name: "Пользователь"
-}
-var start = 0;
+let currentUser = {
+    name: 'Пользователь'
+};
+let start;
+start = 0;
 
-var articlesModule = (function () {
-    var USER_OK = "ок";
-    var USER_NO_USER = "Пользователь с таким именем не зарегистрирован";
-    var USER_INCORRECT_PASSWORD = "Неверный пароль";
-    var MAX_ON_PAGE = 4;
-    var filterConfig = {
-        author: "",
-        createdAt: "",
+const articlesModule = (function () {
+    let USER_OK = 'ок';
+    let USER_NO_USER = 'Пользователь с таким именем не зарегистрирован';
+    let USER_INCORRECT_PASSWORD = 'Неверный пароль';
+    let MAX_ON_PAGE = 4;
+    let filterConfig = {
+        author: '',
+        createdAt: '',
         tags: []
     };
 
-    var GLOBAL_ARTICLES_INNER = [
+    let GLOBAL_ARTICLES_INNER = [
         {
             id: '1',
             title: '"Не получается купить проект". Город скорректировал подход к постройке футбольного стадиона',
@@ -174,106 +179,106 @@ var articlesModule = (function () {
             tag: ['Культура']
         },
         {
-            id: "7",
-            title: "Bloomberg представил топ-500 богатейших людей планеты. Белорусов среди них пока нет",
-            summary: " Самый богатый белорус - это 40-летний создатель онлайн-игры World of Tanks Виктор Кислый",
-            createdAt: new Date("2017-02-28T11:55:00"),
-            author: "Дмитрий",
-            content: "В феврале 2016-го пополнил список долларовых миллиардеров Bloomberg, но пока «отстает» от замыкающего " +
-            "топ-500 96-летнего миллиардера из Саудовской Аравии Сулеймана аль Раджи более чем на 2 млрд долларов." +
-            "Возглавил рейтинг основатель Microsoft Билл Гейтс (85,6 млрд долларов), на втором месте — американский бизнесмен " +
-            "Уоррен Баффет (78,9 млрд), на третьем — глава Amazon Джефф Безос (73,5 млрд).",
+            id: '7',
+            title: 'Bloomberg представил топ-500 богатейших людей планеты. Белорусов среди них пока нет',
+            summary: ' Самый богатый белорус - это 40-летний создатель онлайн-игры World of Tanks Виктор Кислый',
+            createdAt: new Date('2017-02-28T11:55:00'),
+            author: 'Дмитрий',
+            content: 'В феврале 2016-го пополнил список долларовых миллиардеров Bloomberg, но пока «отстает» от замыкающего ' +
+            'топ-500 96-летнего миллиардера из Саудовской Аравии Сулеймана аль Раджи более чем на 2 млрд долларов.' +
+            'Возглавил рейтинг основатель Microsoft Билл Гейтс (85,6 млрд долларов), на втором месте — американский бизнесмен ' +
+            'Уоррен Баффет (78,9 млрд), на третьем — глава Amazon Джефф Безос (73,5 млрд).',
             tag: ['Экономика']
         },
         {
-            id: "8",
-            title: "Российский хоккеист НХЛ хитро реализовал буллит без броска",
-            summary: "Российский форвард «Тампы» Никита Кучеров принес победу своей команде в поединке против «Баффало», " +
-            "хитро реализовав послематчевый буллит. Ему удалось отправить шайбу в сетку, даже не исполнив броска.",
-            createdAt: new Date("2017-03-02T12:55:00"),
-            author: "Станислав",
-            content: "Сблизившись с голкипером, Никита Кучеров сделал обманное движение, как будто собираясь переложить шайбу" +
-            "на неудобную сторону крюка, но не стал ее касаться, и снаряд неспешно проскользнул в сетку под " +
-            "не ожидавшим такого трюка шведским вратарем Робином Ленером.",
+            id: '8',
+            title: 'Российский хоккеист НХЛ хитро реализовал буллит без броска',
+            summary: 'Российский форвард «Тампы» Никита Кучеров принес победу своей команде в поединке против «Баффало», ' +
+            'хитро реализовав послематчевый буллит. Ему удалось отправить шайбу в сетку, даже не исполнив броска.',
+            createdAt: new Date('2017-03-02T12:55:00'),
+            author: 'Станислав',
+            content: 'Сблизившись с голкипером, Никита Кучеров сделал обманное движение, как будто собираясь переложить шайбу' +
+            'на неудобную сторону крюка, но не стал ее касаться, и снаряд неспешно проскользнул в сетку под ' +
+            'не ожидавшим такого трюка шведским вратарем Робином Ленером.',
             tag: ['Спорт']
         },
         {
-            id: "9",
+            id: '9',
             title: 'Число крытых ледовых арен в Беларуси за 25 лет возросло почти в восемь раз',
             summary: 'Федерация хоккея Беларуси (ФХБ), одного из самых популярных видов спорта, отметила 6 марта четвертьвековой юбилей. За эти годы число крытых ледовых арен возросло почти в восемь раз — с четырех до 31, сообщает корреспондент БЕЛТА.',
-            createdAt: new Date("2017-01-02T12:55:00"),
+            createdAt: new Date('2017-01-02T12:55:00'),
             author: 'Дмитрий',
-            content: "Федерация была основана 6 марта 1992 года и является членом Международной федерации хоккея (ИИХФ) с 6 мая 1992-го.\n— Хоккей с шайбой по праву завоевал любовь и признание во всех уголках нашей страны, среди болельщиков разных возрастов и профессий, среди тех, кто беззаветно предан этой великой игре, и тех, кто только делает первые шаги на ледовых площадках, — отметил в своем поздравлении председатель ФХБ Игорь Рачковский.\nПервым председателем федерации был Евгений Анкуда, также ФХБ ранее возглавляли Лев Контарович, Юрий Бородич, Владимир Наумов и Евгений Ворсин.\nСамого значительного успеха за время выступлений на международных турнирах национальная сборная Беларуси добилась в 2002 году, когда заняла четвертое место на зимних Олимпийских играх в Солт-Лейк-Сити.\nВажнейшей вехой в развитии вида спорта стало проведение чемпионата мира в 2014 году, который с успехом прошел на двух ультрасовременных столичных ледовых стадионах — «Чижовка-Арене» и «Минск-Арене».\nТакже Беларусь подала совместную заявку с Латвией на проведение планетарного форума 2021 года.",
+            content: 'Федерация была основана 6 марта 1992 года и является членом Международной федерации хоккея (ИИХФ) с 6 мая 1992-го.\n— Хоккей с шайбой по праву завоевал любовь и признание во всех уголках нашей страны, среди болельщиков разных возрастов и профессий, среди тех, кто беззаветно предан этой великой игре, и тех, кто только делает первые шаги на ледовых площадках, — отметил в своем поздравлении председатель ФХБ Игорь Рачковский.\nПервым председателем федерации был Евгений Анкуда, также ФХБ ранее возглавляли Лев Контарович, Юрий Бородич, Владимир Наумов и Евгений Ворсин.\nСамого значительного успеха за время выступлений на международных турнирах национальная сборная Беларуси добилась в 2002 году, когда заняла четвертое место на зимних Олимпийских играх в Солт-Лейк-Сити.\nВажнейшей вехой в развитии вида спорта стало проведение чемпионата мира в 2014 году, который с успехом прошел на двух ультрасовременных столичных ледовых стадионах — «Чижовка-Арене» и «Минск-Арене».\nТакже Беларусь подала совместную заявку с Латвией на проведение планетарного форума 2021 года.',
             tag: ['Спорт', 'Культура']
         },
         {
-            id: "10",
+            id: '10',
             title: 'Проект "Копенгаген": дом в скандинавском стиле построили под Минском за 118 дней',
             summary: 'Перед архитектором этого дома стояла непростая задача — создать проект в современной стилистике,\nкоторый бы гармонично вписался в довольно узкий, вытянутый в длину участок с большим перепадом высот.\nОн должен быть функциональным, энергосберегающим и экологичным, иметь разумную стоимость и короткие сроки возведения. \nИ обязательно каркасным. И вот через 118 дней от момента начала работ на участке в деревне под Минском появился интересный\nобъект с оригинальным названием «Копенгаген».',
-            createdAt: new Date("2017-01-02T13:55:00"),
+            createdAt: new Date('2017-01-02T13:55:00'),
             author: 'Анна',
-            content: "Перед архитектором этого дома стояла непростая задача — создать проект в современной стилистике,\nкоторый бы гармонично вписался в довольно узкий, вытянутый в длину участок с большим перепадом высот.\nОн должен быть функциональным, энергосберегающим и экологичным, иметь разумную стоимость и короткие сроки возведения. \nИ обязательно каркасным. И вот через 118 дней от момента начала работ на участке в деревне под Минском появился интересный\nобъект с оригинальным названием «Копенгаген».",
+            content: 'Перед архитектором этого дома стояла непростая задача — создать проект в современной стилистике,\nкоторый бы гармонично вписался в довольно узкий, вытянутый в длину участок с большим перепадом высот.\nОн должен быть функциональным, энергосберегающим и экологичным, иметь разумную стоимость и короткие сроки возведения. \nИ обязательно каркасным. И вот через 118 дней от момента начала работ на участке в деревне под Минском появился интересный\nобъект с оригинальным названием «Копенгаген».',
             tag: ['Культура']
         },
         {
-            id: "11",
-            title: '"Папулярная навука па-беларуску" запрашае абмеркаваць тэму "Светлавая хваля',
+            id: '11',
+            title: '"Папулярная навука па-беларуску" запрашае абмеркаваць тэму "Светлавая хваля"',
             summary: 'Праект «Папулярная навука па-беларуску» запрашае 27 лютага правесці вечар разам. Новая тэма — «Оптыка. Светлавая хваля і яе прымяненне».Гэтым разам увага будзе скіравана на тлумачэнне звычайных светлавых з’яў, з якімі мы сустракаемся кожны дзень.Будзе прапанавана разабрацца, якую прыроду мае сонечны свет і што значыць «раскласці святло на спектр»а таксама разгледжана шкала электрамагнтных хваляў — дзе там ультарфіялет, а дзе інфрачырвонае выпраменьванне.Нагадаем пра з’явы інтэрферэнцыi і дыфракцыi (яны вывучаліся на мінулых лекцыях) і прадэманструем іх на практыцы.Будуць паказаны эксперыменты з лазерам і не толькі.',
-            createdAt: new Date("2017-02-02T19:55:00"),
+            createdAt: new Date('2017-02-02T19:55:00'),
             author: 'Анна',
             content: ' Праект «Папулярная навука па-беларуску» запрашае 27 лютага правесці вечар разам. Новая тэма — «Оптыка. Светлавая хваля і яе прымяненне».Гэтым разам увага будзе скіравана на тлумачэнне звычайных светлавых з’яў, з якімі мы сустракаемся кожны дзень.Будзе прапанавана разабрацца, якую прыроду мае сонечны свет і што значыць «раскласці святло на спектр»а таксама разгледжана шкала электрамагнтных хваляў — дзе там ультарфіялет, а дзе інфрачырвонае выпраменьванне.Нагадаем пра з’явы інтэрферэнцыi і дыфракцыi (яны вывучаліся на мінулых лекцыях) і прадэманструем іх на практыцы.Будуць паказаны эксперыменты з лазерам і не толькі.',
             tag: ['Культура', 'Наука']
         },
         {
-            id: "12",
-            title: "В БГЭУ выбрали самую красивую студентку",
-            summary: "Традиционно женский нархоз разыграл титул своей самой красивой студентки. " +
-            "Пятничным вечером девять девушек сноровисто меняли платья, аккуратно вышагивали на шпильках высотой с небоскреб.",
-            createdAt: new Date("2017-02-24T08:00:00"),
-            author: "Onliner.by",
-            content: " Девушек девять. Они представляют разные факультеты, аббревиатуры которых могут быть понятны только местным." +
-            " На сцену выходит Марта Колб с факультета менеджмента. Сразу говорит, что она папина дочка: с 12 лет водит машину " +
-            "и умеет забивать гвозди. Все аплодируют ее силе и независимости.В итоге главный приз" +
-            " из его рук получила Марта Колб. Девушка настолько не ожидала успеха, что расплакалась прямо как в телевизоре. " +
-            "Потом сказала, мол, очень сильно переживала и на репетициях даже лила слезы от перенапряжения." +
-            "Девушка родом из Пинска. Пока неизвестно, вернется ли она на Полесье после учебы. Хотя это и неважно.",
+            id: '12',
+            title: 'В БГЭУ выбрали самую красивую студентку',
+            summary: 'Традиционно женский нархоз разыграл титул своей самой красивой студентки. ' +
+            'Пятничным вечером девять девушек сноровисто меняли платья, аккуратно вышагивали на шпильках высотой с небоскреб.',
+            createdAt: new Date('2017-02-24T08:00:00'),
+            author: 'Onliner.by',
+            content: ' Девушек девять. Они представляют разные факультеты, аббревиатуры которых могут быть понятны только местным.' +
+            ' На сцену выходит Марта Колб с факультета менеджмента. Сразу говорит, что она папина дочка: с 12 лет водит машину ' +
+            'и умеет забивать гвозди. Все аплодируют ее силе и независимости.В итоге главный приз' +
+            ' из его рук получила Марта Колб. Девушка настолько не ожидала успеха, что расплакалась прямо как в телевизоре. ' +
+            'Потом сказала, мол, очень сильно переживала и на репетициях даже лила слезы от перенапряжения.' +
+            'Девушка родом из Пинска. Пока неизвестно, вернется ли она на Полесье после учебы. Хотя это и неважно.',
             tag: ['Культура', 'Университет']
         },
         {
-            id: "13",
-            title: "6 марта в Беларуси ожидаются дожди",
-            summary: "В Беларуси 6 марта будет облачно с прояснениями, на большей части территории пройдут дожди.",
-            createdAt: new Date("2017-02-28T09:00:00"),
-            author: "TUT.BY",
-            content: " В северных районах страны возможен мокрый снег, слабый гололед, на отдельных участках дорог гололедица.",
+            id: '13',
+            title: '6 марта в Беларуси ожидаются дожди',
+            summary: 'В Беларуси 6 марта будет облачно с прояснениями, на большей части территории пройдут дожди.',
+            createdAt: new Date('2017-02-28T09:00:00'),
+            author: 'TUT.BY',
+            content: ' В северных районах страны возможен мокрый снег, слабый гололед, на отдельных участках дорог гололедица.',
             tag: ['Погода']
         },
         {
-            id: "14",
-            title: "Прыгун в высоту принес Беларуси третью медаль на ЧЕ-2017 по легкой атлетике в помещении ",
-            summary: "Белорусский прыгун в высоту 20-летний Павел Селиверстов принес Беларуси третью медаль " +
-            "на чемпионате Европы по легкой атлетике в помещении, который проходит в Белграде.+",
-            createdAt: new Date("2017-02-25T09:40:00"),
-            author: "TUT.BY",
-            content: " Лучшим результатом белоруса стала высота 2,27 м, и этого показателя хватило для бронзовой награды.",
+            id: '14',
+            title: 'Прыгун в высоту принес Беларуси третью медаль на ЧЕ-2017 по легкой атлетике в помещении ',
+            summary: 'Белорусский прыгун в высоту 20-летний Павел Селиверстов принес Беларуси третью медаль ' +
+            'на чемпионате Европы по легкой атлетике в помещении, который проходит в Белграде.+',
+            createdAt: new Date('2017-02-25T09:40:00'),
+            author: 'TUT.BY',
+            content: ' Лучшим результатом белоруса стала высота 2,27 м, и этого показателя хватило для бронзовой награды.',
             tag: ['Спорт']
         },
         {
-            id: "15",
-            title: "В Минске прошел торжественный марш подразделений МВД, посвященный 100-летию белорусской милиции",
-            summary: "Торжественный марш подразделений Министерства внутренних дел, посвященный 100-летию белорусской милиции," +
-            " прошел сегодня в Минске на Октябрьской площади.",
-            createdAt: new Date("2017-02-27T18:24:00"),
-            author: "Onliner.by",
-            content: " Всего в этом мероприятии было задействовано более 1,2 тыс. сотрудников различных подразделений МВД." +
-            " Также в параде участвовало 46 единиц техники — современных машин и ретроавтомобилей.",
+            id: '15',
+            title: 'В Минске прошел торжественный марш подразделений МВД, посвященный 100-летию белорусской милиции',
+            summary: 'Торжественный марш подразделений Министерства внутренних дел, посвященный 100-летию белорусской милиции,' +
+            ' прошел сегодня в Минске на Октябрьской площади.',
+            createdAt: new Date('2017-02-27T18:24:00'),
+            author: 'Onliner.by',
+            content: ' Всего в этом мероприятии было задействовано более 1,2 тыс. сотрудников различных подразделений МВД.' +
+            ' Также в параде участвовало 46 единиц техники — современных машин и ретроавтомобилей.',
             tag: ['Культура']
         }
     ];
 
-    var GLOBAL_TAGS_INNER = ['Беларусь', 'Литва', 'Россия', 'Украина', 'Латвия', 'Польша', 'Авто', 'Проишествия', 'Спорт', 'Строительство', 'Культура', 'Афиша', 'Политика', 'Экономика', 'Туризм', 'Образование', 'Университет', 'Наука'];
-    var GLOBAL_AUTHORS_INNER = ['Станислав', 'Дмитрий', 'Владимир', 'Иванов Иван', 'Виталий Олехнович', 'Onliner.by', "Станислав", 'Анна', "TUT.BY"];
-    var GLOBAL_USERS_INNER = [
+    let GLOBAL_TAGS_INNER = ['Беларусь', 'Литва', 'Россия', 'Украина', 'Латвия', 'Польша', 'Авто', 'Проишествия', 'Спорт', 'Строительство', 'Культура', 'Афиша', 'Политика', 'Экономика', 'Туризм', 'Образование', 'Университет', 'Наука'];
+    let GLOBAL_AUTHORS_INNER = ['Станислав', 'Дмитрий', 'Владимир', 'Иванов Иван', 'Виталий Олехнович', 'Onliner.by', 'Станислав', 'Анна', 'TUT.BY'];
+    let GLOBAL_USERS_INNER = [
         {
             name: 'Татьяна',
             password: '2609'
@@ -291,8 +296,8 @@ var articlesModule = (function () {
             password: 'предположим_что_он_есть'
         },
         {
-            name: "Тыковка",
-            password: "И_ПРОЧИЕ_ОВОЩИ"
+            name: 'Тыковка',
+            password: 'И_ПРОЧИЕ_ОВОЩИ'
         }
     ];
 
@@ -301,7 +306,7 @@ var articlesModule = (function () {
     }
 
     function comparePassword(name, password) {
-        var result = USER_NO_USER;
+        let result = USER_NO_USER;
         GLOBAL_USERS_INNER.forEach(function (item) {
             if (item.name === name) {
                 if (item.password === password) {
@@ -316,19 +321,18 @@ var articlesModule = (function () {
     }
 
 
-    function getArticles(skip=0, top=4) {
-        var result = GLOBAL_ARTICLES_INNER;
+    function getArticles(skip = 0, top = MAX_ON_PAGE) {
+        let result = GLOBAL_ARTICLES_INNER;
         if (filterConfig.tags) {
             result = result.filter(function (obj) {
-                var flag = filterConfig.tags.every(function (item, index, array) {
-                    return obj.tag.join(" ").indexOf(item) != -1;
+                return filterConfig.tags.every(function (item) {
+                    return obj.tag.join(' ').indexOf(item) != -1;
                 });
-                return flag;
             });
         }
         if (filterConfig.createdAt)
             result = result.filter(function (obj) {
-                var flag = obj.createdAt.getFullYear() === filterConfig.createdAt.getFullYear();
+                let flag = obj.createdAt.getFullYear() === filterConfig.createdAt.getFullYear();
                 flag = flag & obj.createdAt.getMonth() === filterConfig.createdAt.getMonth();
                 flag = flag & obj.createdAt.getDate() === filterConfig.createdAt.getDate();
                 return flag;
@@ -336,14 +340,14 @@ var articlesModule = (function () {
         if (filterConfig.author)
             result = result.filter(function (obj) {
                 return obj.author.toLowerCase() === filterConfig.author.toLowerCase();
-            })
+            });
         result.sort(compareDates);
         result = result.slice(skip, skip + top);
         return result;
     }
 
     function getArticle(id) {
-        var result = GLOBAL_ARTICLES_INNER.filter(function (item) {
+        let result = GLOBAL_ARTICLES_INNER.filter(function (item) {
             return item.id === id;
         });
         if (result) {
@@ -353,7 +357,7 @@ var articlesModule = (function () {
     }
 
     function getArticlePosition(id) {
-        for (var i = 0; i < GLOBAL_ARTICLES_INNER.length; i++)
+        for (let i = 0; i < GLOBAL_ARTICLES_INNER.length; i++)
             if (GLOBAL_ARTICLES_INNER[i].id == id)
                 return i;
         return -1;
@@ -376,7 +380,7 @@ var articlesModule = (function () {
             return false;
         }
         if (!article.tag.every(function (item) {
-                var pos = GLOBAL_TAGS_INNER.indexOf(item);
+                let pos = GLOBAL_TAGS_INNER.indexOf(item);
                 return pos != -1;
             })) {
             return false;
@@ -385,7 +389,7 @@ var articlesModule = (function () {
     }
 
     function addArticle(article) {
-        var id = -1;
+        let id = -1;
         GLOBAL_ARTICLES_INNER.forEach(function (item) {
             if (Number(item.id) > Number(id)) {
                 id = item.id;
@@ -400,7 +404,7 @@ var articlesModule = (function () {
     }
 
     function editArticle(id, article) {
-        var pos = getArticlePosition(id);
+        let pos = getArticlePosition(id);
         if (pos === -1) {
             return false;
         }
@@ -413,7 +417,7 @@ var articlesModule = (function () {
 
 
     function removeArticle(id) {
-        var pos = getArticlePosition(id);
+        let pos = getArticlePosition(id);
         if (pos === -1)
             return false;
         GLOBAL_ARTICLES_INNER.splice(pos, 1);
@@ -421,8 +425,8 @@ var articlesModule = (function () {
     }
 
     function cleanFilterConfig() {
-        filterConfig.author = "";
-        filterConfig.createdAt = "";
+        filterConfig.author = '';
+        filterConfig.createdAt = '';
         filterConfig.tags = [];
     }
 
@@ -430,10 +434,6 @@ var articlesModule = (function () {
         filterConfig.author = author;
         filterConfig.createdAt = createdAt;
         filterConfig.tags = tags;
-    }
-
-    function setGLOBAL_ARTICLES(articles) {
-        GLOBAL_ARTICLES_INNER = articles.slice();
     }
 
     return {
@@ -447,10 +447,10 @@ var articlesModule = (function () {
         GLOBAL_AUTHORS: GLOBAL_AUTHORS_INNER,
         GLOBAL_ARTICLES: GLOBAL_ARTICLES_INNER,
         GLOBAL_USERS: GLOBAL_USERS_INNER,
-        filterConfig: filterConfig,
         cleanFilterConfig: cleanFilterConfig,
         setFilterConfig: setFilterConfig,
-        setGLOBAL_ARTICLES: setGLOBAL_ARTICLES
+        MAX_ON_PAGE: MAX_ON_PAGE,
+        USER_OK: USER_OK
     };
 }());
 app.listen(3000);
