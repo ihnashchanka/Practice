@@ -1,0 +1,29 @@
+{
+  "name": "news",
+  "version": "1.0.0",
+  "description": "",
+  "main": "start.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ihnashchanka/Practice.git"
+  },
+  "dependencies": {
+    "express": "^4.15.2"
+  },
+  "author": "Ihnashchanka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ihnashchanka/Practice/issues"
+  },
+  "homepage": "https://github.com/ihnashchanka/Practice#readme",
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^1.10.3",
+    "eslint-plugin-react": "^7.0.1"
+  }
+}
