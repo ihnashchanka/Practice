@@ -17,8 +17,8 @@ app.get('/start', function (req, res) {
         articles: articlesModule.getArticles(start, articlesModule.MAX_ON_PAGE),
         tags: articlesModule.GLOBAL_TAGS
     };
-    res.status(200);
     res.json(result);
+    res.status(200);
 });
 app.get('/checkUser', function (req, res) {
     let name = req.query.name;
@@ -380,9 +380,9 @@ const articlesModule = (function () {
             return false;
         }
         if (!article.tag.every(function (item) {
-                let pos = GLOBAL_TAGS_INNER.indexOf(item);
-                return pos != -1;
-            })) {
+            let pos = GLOBAL_TAGS_INNER.indexOf(item);
+            return pos != -1;
+        })) {
             return false;
         }
         return true;

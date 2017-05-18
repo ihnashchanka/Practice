@@ -24,19 +24,24 @@ const logIn = function () {
         toMain[1].addEventListener('click', function () {
             let name = document.querySelector('#user_name').value;
             let password = document.querySelector('#password').value;
-            let result = serverModule.checkUser(name, password);
-            if (result === USER_OK) {
-                user = {
-                    name: name
-                };
-                displayModule.userCheck();
-                displayModule.showMainPage(currentArticles, currentAuthors);
-            }
-            else {
-                let h2 = document.querySelector('h2');
-                h2.style.color = 'red';
-                h2.innerText = result;
-            }
+            serverModule.checkUser(name, password)
+                .then((result) => {
+                    if (result === USER_OK) {
+                        user = {
+                            name: name
+                        };
+                        displayModule.userCheck();
+                        displayModule.showMainPage(currentArticles, currentAuthors);
+                    }
+                    else {
+                        let h2 = document.querySelector('h2');
+                        h2.style.color = 'red';
+                        h2.innerText = result;
+                    }
+                })
+                .catch((reject) => {
+                    displayModule.showError(reject.statusText);
+                });
         });
     }
 };
@@ -57,7 +62,14 @@ const filter = function () {
     if (filterState) {
         button.innerText = 'Применить';
         filterState = false;
-        currentArticles = serverModule.changeFilter('', '', []);
+        serverModule.changeFilter('', '', [])
+            .then((result) => {
+                currentArticles = result;
+                displayModule.showArticles(currentArticles);
+            })
+            .catch((reject) => {
+                displayModule.showError(reject.statusText);
+            });
     }
     else {
         button.innerText = 'Сбросить фильтр';
@@ -80,30 +92,59 @@ const filter = function () {
                 tags.push(item.value);
             }
         });
-        currentArticles = serverModule.changeFilter(author, createdAt, tags);
+        serverModule.changeFilter(author, createdAt, tags)
+            .then((result) => {
+                currentArticles = result;
+                displayModule.showArticles(currentArticles);
+            })
+            .catch((reject) => {
+                displayModule.showError(reject.statusText);
+            });
     }
-    displayModule.showArticles(currentArticles);
+
 };
 const nextPage = function () {
-    currentArticles = serverModule.newPage(4);
-    displayModule.showArticles(currentArticles);
+    serverModule.newPage(4)
+        .then((result) => {
+            currentArticles = result;
+            displayModule.showArticles(currentArticles);
+        })
+        .catch((reject) => {
+            displayModule.showError(reject.statusText);
+        });
 };
 const previousPage = function () {
-    currentArticles = serverModule.newPage(-4);
-    displayModule.showArticles(currentArticles);
+    serverModule.newPage(-4)
+        .then((result) => {
+            currentArticles = result;
+            displayModule.showArticles(currentArticles);
+        })
+        .catch((reject) => {
+            displayModule.showError(reject.statusText);
+        });
 };
 const del = function (id) {
-    currentArticles = serverModule.removeArticle(id);
-    displayModule.showMainPage(currentArticles, currentAuthors);
+    serverModule.removeArticle(id)
+        .then((result) => {
+            currentArticles = result;
+            displayModule.showMainPage(currentArticles, currentAuthors);
+        })
+        .catch((reject) => {
+            displayModule.showError(reject.statusText);
+        });
 };
 const read = function (id) {
-    let article = serverModule.readArticle(id);
-    displayModule.showFullArticle(article);
-
-    let add = document.querySelector('.to_main');
-    add.addEventListener('click', function () {
-        displayModule.showMainPage(currentArticles, currentAuthors);
-    });
+    serverModule.readArticle(id)
+        .then((result) => {
+            displayModule.showFullArticle(result);
+            let add = document.querySelector('.to_main');
+            add.addEventListener('click', function () {
+                displayModule.showMainPage(currentArticles, currentAuthors);
+            })
+        })
+        .catch((reject) => {
+            displayModule.showError(reject.statusText);
+        });
 };
 const saveArticle = function (id, isAdd) {
     let article = {};
@@ -121,17 +162,43 @@ const saveArticle = function (id, isAdd) {
     if (isAdd) {
         article.author = user.name;
         article.createdAt = new Date;
-        serverModule.addArticle(article);
+
+        serverModule.addArticle(article)
+            .then(() => {
+                serverModule.getArticles()
+                    .then((result) => {
+                        currentArticles = result;
+                        displayModule.showMainPage(currentArticles, currentAuthors);
+                    })
+                    .catch((reject) => {
+                        displayModule.showError(reject.statusText);
+                    });
+            })
+            .catch((reject) => {
+                displayModule.showError(reject.statusText);
+            });
     }
     else {
         if (validateArticleEdit(article)) {
-            serverModule.editArticle(article);
+            serverModule.editArticle(article)
+                .then(() => {
+                    serverModule.getArticles()
+                        .then((result) => {
+                            currentArticles = result;
+                            displayModule.showMainPage(currentArticles, currentAuthors);
+                        })
+                        .catch((reject) => {
+                            displayModule.showError(reject.statusText);
+                        });
+                })
+                .catch((reject) => {
+                    displayModule.showError(reject.statusText);
+                });
+
         }
     }
-    currentArticles = serverModule.getArticles();
-    displayModule.showMainPage(currentArticles, currentAuthors);
-
 };
+
 function validateArticleEdit(article) {
     if (article.title.length >= 100 || !article.title) {
         return false;
@@ -152,13 +219,17 @@ function validateArticleEdit(article) {
 }
 
 const change = function (id) {
-    let article = serverModule.readArticle(id);
-    displayModule.showAdd(article, GLOBAL_TAGS, true);
-
-    let add = document.querySelector('.to_main');
-    add.addEventListener('click', function () {
-        saveArticle(id, false);
-    });
+    serverModule.readArticle(id)
+        .then((result) => {
+            displayModule.showAdd(result, GLOBAL_TAGS, true);
+            let add = document.querySelector('.to_main');
+            add.addEventListener('click', function () {
+                saveArticle(id, false);
+            });
+        })
+        .catch((reject) => {
+            displayModule.showError(reject.statusText);
+        });
 };
 const actions = {
     read: read,
@@ -403,6 +474,19 @@ let displayModule = (function () {
         }
     }
 
+    function showError(message) {
+        let mainPart = document.querySelector('.main-part');
+        cleanNode(mainPart);
+        mainPart.style.backgroundColor = 'rgba(255,255,255,0)';
+        mainPart.appendChild(document.querySelector('.error').content.cloneNode(true));
+        let errorMessage = mainPart.querySelector('.error_message');
+        errorMessage.innerText = message;
+        let to_main = document.querySelector('.to_main');
+        to_main.addEventListener('click', function () {
+            showMainPage(currentArticles, currentAuthors);
+        });
+    }
+
     return {
         showArticles: showArticles,
         showMainPage: showMainPage,
@@ -410,22 +494,27 @@ let displayModule = (function () {
         showFullArticle: showFullArticle,
         showTags: showTags,
         showLog: showLog,
-        userCheck: userCheck
+        userCheck: userCheck,
+        showError: showError
     };
 }());
 
 function init() {
-    let data = serverModule.getStartData();
-    user = data.user;
-    currentArticles = data.articles;
-    currentAuthors = data.authors;
-    GLOBAL_TAGS = data.tags;
-    displayModule.showMainPage(currentArticles, currentAuthors);
-    displayModule.userCheck();
-    let tags = document.querySelector('.tags');
-    tags.addEventListener('click', showTagsList);
-    let articleList = document.querySelector('.main-part');
-    articleList.addEventListener('click', workWithArticles);
+    let prom = serverModule.getStartData();
+    prom.then(function (data) {
+        user = data.user;
+        currentArticles = data.articles;
+        currentAuthors = data.authors;
+        GLOBAL_TAGS = data.tags;
+        displayModule.showMainPage(currentArticles, currentAuthors);
+        displayModule.userCheck();
+        let tags = document.querySelector('.tags');
+        tags.addEventListener('click', showTagsList);
+        let articleList = document.querySelector('.main-part');
+        articleList.addEventListener('click', workWithArticles);
+    }).catch(error => {
+        displayModule.showError(error.statusText);
+    });
 }
 
 init();
