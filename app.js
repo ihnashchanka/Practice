@@ -1,12 +1,103 @@
-/* global require*/
+/* global require, global*/
 
 const express = require('express');
-
-const app = express();
 const bodyParser = require('body-parser');
-
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const session = require('express-session');
+const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+const app = express();
 app.use(express.static('public/UI'));
 app.use(bodyParser.json());
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(
+    (username, password, done) => {
+        console.log(username);
+        Userbase.findOne({username}).then((user) => {
+            console.log(user);
+            if (!user) {
+                return done(null, false, {message: 'Incorrect username.'});
+            }
+            if (user.password !== password) {
+                return done(null, false, {message: 'Incorrect password.'});
+            }
+            return done(null, user);
+        });
+    }
+));
+
+
+const MongoDBStore = require('connect-mongodb-session')(session);
+
+const store = new MongoDBStore(
+    {
+        uri: 'mongodb://localhost:27017/admin',
+        collection: 'sessions',
+    });
+store.on('error', (error) => {
+    console.log(error);
+});
+
+app.use(session({
+    secret: 'secret cat',
+    saveUninitialized: true,
+    resave: false,
+    rolling: true,
+    cookie: {maxAge: 1000 * 60 * 60 * 24 * 7},
+    store,
+}));
+const url = 'mongodb://localhost:27017/admin';
+mongoose.connect(url);
+
+const userSchema = mongoose.Schema({
+    username: {
+        type: String,
+        unique: true,
+        required: true,
+    },
+    password: {
+        type: String,
+        required: true,
+    }
+});
+
+const Userbase = mongoose.model('users', userSchema);
+
+passport.serializeUser((username, done) => done(null, username.id));
+passport.deserializeUser((id, done) => {
+    Userbase.findById(id, (err, user) => {
+        done(err, user);
+    });
+});
+
+app.post('/login', (req, res, next) => {
+    console.log(req.body);
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            return res.status(404)
+                .send('Not found');
+        }
+        req.logIn(user, (err) => {
+            if (err) {
+                return next(err);
+            }
+            console.log(user);
+            return res.json(user.username);
+        });
+    })(req, res, next);
+});
+app.get('/logout', (req, res) => {
+    console.log(req.session);
+    req.session.destroy((err) => {
+        res.redirect('/');
+    });
+});
 
 
 app.get('/start', function (req, res) {
@@ -20,23 +111,9 @@ app.get('/start', function (req, res) {
     res.json(result);
     res.status(200);
 });
-app.get('/checkUser', function (req, res) {
-    let name = req.query.name;
-    let password = req.query.password;
-    if (!name || !password) {
-        res.status(400);
-        res.json(false);
-    }
-    else {
-        let result = articlesModule.comparePassword(name, password);
-        if (result === articlesModule.USER_OK) {
-            currentUser.name = name;
-        }
-        res.status(200);
-        res.json(result);
-    }
 
-});
+
+
 app.get('/filterChange', function (req, res) {
     let author = req.query.author;
     let createdAt = req.query.createdAt ? new Date(req.query.createdAt) : '';

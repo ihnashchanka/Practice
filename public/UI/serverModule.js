@@ -25,13 +25,32 @@ const serverModule = (function () {
             };
         });
     }
-    function checkUser(name, password) {
+    function checkUser(username, password) {
         if (!password) {
             password = 'no_password';
         }
         return new Promise((resolve, reject) => {
             let hreq = new XMLHttpRequest();
-            hreq.open('GET', '/checkUser?name=' + name + '&password=' + password);
+            hreq.open('POST', '/login');
+            hreq.setRequestHeader('content-type', 'application/json');
+            hreq.send(JSON.stringify({username, password}));
+            hreq.onload = function () {
+                if (this.status >= 200 && this.status < 300) {
+                    resolve(JSON.parse(hreq.responseText));
+                } else {
+                    reject({
+                        status: this.status,
+                        statusText: hreq.statusText
+                    });
+                }
+            };
+        });
+    }
+
+    function logOut(){
+        return new Promise((resolve, reject) => {
+            let hreq = new XMLHttpRequest();
+            hreq.open('GET', '/logout');
             hreq.send();
             hreq.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
@@ -206,6 +225,7 @@ const serverModule = (function () {
     return {
         getStartData: getStartData,
         checkUser: checkUser,
+        logOut: logOut,
         changeFilter: changeFilter,
         newPage: newPage,
         removeArticle: removeArticle,

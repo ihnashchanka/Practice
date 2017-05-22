@@ -2,8 +2,6 @@
 let user = {
     name: 'Пользователь',
 };
-let USER_OK = 'ок';
-
 let currentArticles;
 let currentAuthors;
 let GLOBAL_TAGS;
@@ -12,6 +10,7 @@ let filterState = 0;
 const logIn = function () {
     if (user) {
         user = null;
+        serverModule.logOut();
         displayModule.userCheck();
     }
     else {
@@ -26,18 +25,11 @@ const logIn = function () {
             let password = document.querySelector('#password').value;
             serverModule.checkUser(name, password)
                 .then((result) => {
-                    if (result === USER_OK) {
-                        user = {
-                            name: name
-                        };
-                        displayModule.userCheck();
-                        displayModule.showMainPage(currentArticles, currentAuthors);
-                    }
-                    else {
-                        let h2 = document.querySelector('h2');
-                        h2.style.color = 'red';
-                        h2.innerText = result;
-                    }
+                    user = {
+                        name: result
+                    };
+                    displayModule.userCheck();
+                    displayModule.showMainPage(currentArticles, currentAuthors);
                 })
                 .catch((reject) => {
                     displayModule.showError(reject.statusText);
@@ -140,7 +132,7 @@ const read = function (id) {
             let add = document.querySelector('.to_main');
             add.addEventListener('click', function () {
                 displayModule.showMainPage(currentArticles, currentAuthors);
-            })
+            });
         })
         .catch((reject) => {
             displayModule.showError(reject.statusText);
@@ -204,9 +196,9 @@ function validateArticleEdit(article) {
         return false;
     }
     if (!article.tag.every(item => {
-            let pos = GLOBAL_TAGS.indexOf(item);
-            return pos != -1;
-        })) {
+        let pos = GLOBAL_TAGS.indexOf(item);
+        return pos != -1;
+    })) {
         return false;
     }
     if (article.summary.length >= 200 || !article.summary) {
