@@ -54,7 +54,7 @@ const serverModule = (function () {
             hreq.send();
             hreq.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
-                    resolve(JSON.parse(hreq.responseText));
+                    resolve(true);
                 } else {
                     reject({
                         status: this.status,
@@ -88,9 +88,7 @@ const serverModule = (function () {
             hreq.send();
             hreq.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
-                    let info = JSON.parse(hreq.responseText);
-                    parseDate(info);
-                    resolve(info);
+                    resolve(hreq.responseText);
                 } else {
                     reject({
                         status: this.status,
@@ -124,13 +122,10 @@ const serverModule = (function () {
     function removeArticle(id) {
         return new Promise((resolve, reject) => {
             let hreq = new XMLHttpRequest();
-            hreq.open('GET', '/removeArticle?id=' + id);
-            hreq.send();
+            hreq.open('DELETE', '/removeArticle?id=' + id);
             hreq.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
-                    let info = JSON.parse(hreq.responseText);
-                    parseDate(info);
-                    resolve(info);
+                    resolve(hreq.responseText);
                 } else {
                     reject({
                         status: this.status,
@@ -138,6 +133,7 @@ const serverModule = (function () {
                     });
                 }
             };
+            hreq.send();
         });
     }
 
@@ -145,7 +141,6 @@ const serverModule = (function () {
         return new Promise((resolve, reject) => {
             let hreq = new XMLHttpRequest();
             hreq.open('GET', '/readArticle?id=' + id);
-            hreq.send();
             hreq.onload = function () {
                 if (this.status >= 200 && this.status < 300) {
                     let info = JSON.parse(hreq.responseText);
@@ -159,6 +154,7 @@ const serverModule = (function () {
                     });
                 }
             };
+            hreq.send();
         });
     }
 

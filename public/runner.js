@@ -1,13 +1,13 @@
 /*global serverModule */
-let user = {
-    name: 'Пользователь',
-};
+let user = null;
 let currentArticles;
 let currentAuthors;
 let GLOBAL_TAGS;
 
 let filterState = 0;
+let tagsState = 1;
 const logIn = function () {
+    tagsState =0;
     if (user) {
         user = null;
         serverModule.logOut();
@@ -38,9 +38,11 @@ const logIn = function () {
     }
 };
 const showTagsList = function () {
-    displayModule.showTags(GLOBAL_TAGS);
-    let hide = document.querySelector('.hide_tags');
-    hide.addEventListener('click', hideTagsList);
+    if(tagsState) {
+        displayModule.showTags(GLOBAL_TAGS);
+        let hide = document.querySelector('.hide_tags');
+        hide.addEventListener('click', hideTagsList);
+    }
 };
 const hideTagsList = function () {
     let place = document.querySelector('.border');
@@ -55,9 +57,12 @@ const filter = function () {
         button.innerText = 'Применить';
         filterState = false;
         serverModule.changeFilter('', '', [])
-            .then((result) => {
-                currentArticles = result;
-                displayModule.showArticles(currentArticles);
+            .then(() => {
+                serverModule.getArticles()
+                    .then((result) => {
+                        currentArticles = result;
+                        displayModule.showArticles(currentArticles);
+                    });
             })
             .catch((reject) => {
                 displayModule.showError(reject.statusText);
@@ -85,9 +90,12 @@ const filter = function () {
             }
         });
         serverModule.changeFilter(author, createdAt, tags)
-            .then((result) => {
-                currentArticles = result;
-                displayModule.showArticles(currentArticles);
+            .then(() => {
+                serverModule.getArticles()
+                    .then((result) => {
+                        currentArticles = result;
+                        displayModule.showArticles(currentArticles);
+                    });
             })
             .catch((reject) => {
                 displayModule.showError(reject.statusText);
@@ -117,13 +125,17 @@ const previousPage = function () {
 };
 const del = function (id) {
     serverModule.removeArticle(id)
-        .then((result) => {
-            currentArticles = result;
-            displayModule.showMainPage(currentArticles, currentAuthors);
+        .then(() => {
+            serverModule.getArticles()
+                .then((result) => {
+                    currentArticles = result;
+                    displayModule.showMainPage(currentArticles, currentAuthors);
+                });
         })
         .catch((reject) => {
             displayModule.showError(reject.statusText);
         });
+
 };
 const read = function (id) {
     serverModule.readArticle(id)
@@ -171,44 +183,22 @@ const saveArticle = function (id, isAdd) {
             });
     }
     else {
-        if (validateArticleEdit(article)) {
-            serverModule.editArticle(article)
-                .then(() => {
-                    serverModule.getArticles()
-                        .then((result) => {
-                            currentArticles = result;
-                            displayModule.showMainPage(currentArticles, currentAuthors);
-                        })
-                        .catch((reject) => {
-                            displayModule.showError(reject.statusText);
-                        });
-                })
-                .catch((reject) => {
-                    displayModule.showError(reject.statusText);
-                });
-
-        }
+        serverModule.editArticle(article)
+            .then(() => {
+                serverModule.getArticles()
+                    .then((result) => {
+                        currentArticles = result;
+                        displayModule.showMainPage(currentArticles, currentAuthors);
+                    })
+                    .catch((reject) => {
+                        displayModule.showError(reject.statusText);
+                    });
+            })
+            .catch((reject) => {
+                displayModule.showError(reject.statusText);
+            });
     }
 };
-
-function validateArticleEdit(article) {
-    if (article.title.length >= 100 || !article.title) {
-        return false;
-    }
-    if (!article.tag.every(item => {
-        let pos = GLOBAL_TAGS.indexOf(item);
-        return pos != -1;
-    })) {
-        return false;
-    }
-    if (article.summary.length >= 200 || !article.summary) {
-        return false;
-    }
-    if (!article.content) {
-        return false;
-    }
-    return true;
-}
 
 const change = function (id) {
     serverModule.readArticle(id)
@@ -278,7 +268,7 @@ let displayModule = (function () {
             let holder = document.getElementById('holder').content.cloneNode(true);
             let buttons = holder.querySelectorAll('button>img');
             buttons.forEach(function (buttonItem) {
-                buttonItem.id = item.id;
+                buttonItem.id = item._id;
             });
             let hide = holder.querySelector('.hide');
             let title = hide.querySelector('h2');
@@ -299,11 +289,16 @@ let displayModule = (function () {
         cleanNode(mainPart);
         mainPart.style.backgroundColor = 'rgba(255,255,255,0)';
         mainPart.appendChild(document.querySelector('.main-page').content.cloneNode(true));
+        displayModule.userCheck();
+        tagsState = 1;
+        let tags = document.querySelector('.tags');
+        tags.addEventListener('click', showTagsList);
         formSelection(authors);
         showArticles(articles);
     }
 
     function showAdd(article, tags, flag) {
+        tagsState = 0;
         let mainPart = document.querySelector('.main-part');
         cleanNode(mainPart);
         mainPart.appendChild(document.querySelector('.add').content.cloneNode(true));
@@ -388,6 +383,7 @@ let displayModule = (function () {
     }
 
     function showFullArticle(article) {
+        tagsState = 0;
         let mainPart = document.querySelector('.main-part');
         cleanNode(mainPart);
         mainPart.appendChild(document.querySelector('#read_more').content.cloneNode(true));
@@ -404,7 +400,7 @@ let displayModule = (function () {
 
         let buttons = mainPart.querySelectorAll('button>img');
         buttons.forEach(function (item) {
-            item.id = article.id;
+            item.id = article._id;
         });
         let div = mainPart.querySelector('div');
         article.tag.forEach(function (item) {
