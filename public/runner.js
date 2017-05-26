@@ -346,12 +346,6 @@ let displayModule = (function () {
                 }
             });
         }
-
-        let id = document.createElement('div');
-
-        id.innerText = 'ID: ' + article.id;
-        id.className = 'user_information';
-        edit.insertBefore(id, edit.firstChild);
         edit.insertBefore(date, edit.firstChild);
         edit.insertBefore(title, edit.firstChild);
     }
