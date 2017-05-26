@@ -11,7 +11,7 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 mongoose.Promise = global.Promise;
 const app = express();
 
-app.use(express.static('public/UI'));
+app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
