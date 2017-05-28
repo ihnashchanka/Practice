@@ -1,9 +1,9 @@
-MongoDB: mongodb://localhost:27017/admin
+п»їMongoDB: mongodb://localhost:27017/admin
 
-На диске, где установлено mongo, создаем папку data/db
-в ..\MongoDB\Server\3.4\bin запускаем mongod
-Из той же папки(открыв новую консоль) пишем по очереди:
-mongoimport --db admin --collection articles --file "Путь до базы репозитория\private\articles.json)"
+РќР° РґРёСЃРєРµ, РіРґРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ mongo, СЃРѕР·РґР°РµРј РїР°РїРєСѓ data/db
+РІ ..\MongoDB\Server\3.4\bin Р·Р°РїСѓСЃРєР°РµРј mongod
+РР· С‚РѕР№ Р¶Рµ РїР°РїРєРё(РѕС‚РєСЂС‹РІ РЅРѕРІСѓСЋ РєРѕРЅСЃРѕР»СЊ) РїРёС€РµРј РїРѕ РѕС‡РµСЂРµРґРё:
+mongoimport --db admin --collection articles --file "РџСѓС‚СЊ РґРѕ Р±Р°Р·С‹ СЂРµРїРѕР·РёС‚РѕСЂРёСЏ\private\articles.json)"
 mongoimport --db admin --collection sessions --file ..\private\sessions.json
 mongoimport --db admin --collection sessions --file ..\private\authors.json
 mongoimport --db admin --collection users --file ..\private\userbases.json
@@ -11,8 +11,8 @@ mongoimport --db admin --collection tags --file ..\private\tags.json
 
 npm install
 
-Существующие пользователи:
-Татьяна: 2609
-Влаислав Нестеp: 0001
-Амброжевич Татьяна: 0002
-Больше пользователей в файле private/users.json
+РЎСѓС‰РµСЃС‚РІСѓСЋС‰РёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»Рё:
+РўР°С‚СЊСЏРЅР°: 2609
+Р’Р»Р°РёСЃР»Р°РІ РќРµСЃС‚Рµp: 0001
+РђРјР±СЂРѕР¶РµРІРёС‡ РўР°С‚СЊСЏРЅР°: 0002
+Р‘РѕР»СЊС€Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РІ С„Р°Р№Р»Рµ private/users.json
